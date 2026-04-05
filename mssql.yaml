@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server:2025-CU2-ubuntu-22.04
+    container_name: my-mssql-server
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Bishal@1212"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+      - /home/bishalkoirala/Desktop/sql-data-warehouse-project:/data
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
