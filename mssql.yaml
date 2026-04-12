@@ -5,10 +5,10 @@ services:
     image: mcr.microsoft.com/mssql/server:2025-CU2-ubuntu-22.04
     container_name: my-mssql-server
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Bishal@1212"
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: 'Bishal@1212'
     ports:
-      - "1433:1433"
+      - '1433:1433'
     volumes:
       - mssql-data:/var/opt/mssql
       - /home/bishalkoirala/Desktop/sql-data-warehouse-project:/data
@@ -16,3 +16,4 @@ services:
 
 volumes:
   mssql-data:
+    name: mssql-data
