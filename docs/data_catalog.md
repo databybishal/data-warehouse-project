@@ -1,94 +1,98 @@
-# 📊 Data Catalog – Gold Layer
+# DATA DICTIONARY OF GOLD LAYER
 
-This document describes the structure of the **Gold Layer** in the data warehouse. It includes dimension and fact tables used for analytics and reporting.
+## Overview
+
+The Gold Layer represents the final, business-ready layer of the data warehouse. It is designed using a star schema to support analytical queries, reporting, and decision-making. This layer contains curated dimension and fact tables with cleaned, standardized, and enriched data.
 
 ---
 
-## 🧑‍💼 Table: `gold.dim_customers`
+## Table: `gold.dim_customers`
 
 ### Description
 
-Stores customer-related attributes for analytical purposes.
+The `dim_customers` table stores descriptive attributes related to customers. It is a dimension table used to provide context for sales transactions and enables slicing and dicing of data based on customer demographics and attributes.
 
 ### Columns
 
-| Column Name     | Data Type    | Description                 |
-| --------------- | ------------ | --------------------------- |
-| customer_key    | bigint       | Surrogate key (Primary Key) |
-| customer_id     | int          | Source system customer ID   |
-| customer_number | nvarchar(50) | Unique customer number      |
-| first_name      | nvarchar(50) | Customer first name         |
-| last_name       | nvarchar(50) | Customer last name          |
-| country         | nvarchar(50) | Customer country            |
-| marital_status  | nvarchar(50) | Marital status              |
-| gender          | nvarchar(50) | Gender                      |
-| birthdate       | date         | Date of birth               |
-| create_date     | date         | Record creation date        |
+| Column Name     | Data Type    | Description                                                                       |
+| --------------- | ------------ | --------------------------------------------------------------------------------- |
+| customer_key    | bigint       | Surrogate primary key uniquely identifying each customer record in the warehouse. |
+| customer_id     | int          | Original customer identifier from the source system.                              |
+| customer_number | nvarchar(50) | Business-defined unique customer reference number.                                |
+| first_name      | nvarchar(50) | Customer's given name.                                                            |
+| last_name       | nvarchar(50) | Customer's family name.                                                           |
+| country         | nvarchar(50) | Country of residence of the customer, used for geographical analysis.             |
+| marital_status  | nvarchar(50) | Indicates the marital status of the customer for demographic segmentation.        |
+| gender          | nvarchar(50) | Gender of the customer, used for analytical categorization.                       |
+| birthdate       | date         | Customer's date of birth, used to derive age-based insights.                      |
+| create_date     | date         | Date when the customer record was created in the system.                          |
 
 ---
 
-## 📦 Table: `gold.dim_products`
+## Table: `gold.dim_products`
 
 ### Description
 
-Stores product-related attributes for reporting and categorization.
+The `dim_products` table contains detailed information about products. It enables categorization and analysis of sales data across different product hierarchies such as category and subcategory.
 
 ### Columns
 
-| Column Name    | Data Type    | Description                     |
-| -------------- | ------------ | ------------------------------- |
-| product_key    | bigint       | Surrogate key (Primary Key)     |
-| product_id     | int          | Source system product ID        |
-| product_number | nvarchar(50) | Unique product number           |
-| product_name   | nvarchar(50) | Name of the product             |
-| category_id    | nvarchar(50) | Category identifier             |
-| category       | nvarchar(50) | Product category                |
-| subcategory    | nvarchar(50) | Product subcategory             |
-| maintenance    | nvarchar(50) | Maintenance info                |
-| cost           | int          | Cost of product                 |
-| product_line   | nvarchar(50) | Product line                    |
-| start_date     | date         | Product availability start date |
+| Column Name    | Data Type    | Description                                                          |
+| -------------- | ------------ | -------------------------------------------------------------------- |
+| product_key    | bigint       | Surrogate primary key uniquely identifying each product record.      |
+| product_id     | int          | Source system identifier for the product.                            |
+| product_number | nvarchar(50) | Unique product reference code used in business operations.           |
+| product_name   | nvarchar(50) | Descriptive name of the product.                                     |
+| category_id    | nvarchar(50) | Identifier representing the product category from the source system. |
+| category       | nvarchar(50) | High-level classification of the product.                            |
+| subcategory    | nvarchar(50) | More granular classification within a category.                      |
+| maintenance    | nvarchar(50) | Indicates maintenance requirements or classification of the product. |
+| cost           | int          | Cost incurred to produce or procure the product.                     |
+| product_line   | nvarchar(50) | Product line grouping used for business segmentation.                |
+| start_date     | date         | Date from which the product became available for sale.               |
 
 ---
 
-## 💰 Table: `gold.fact_sales`
+## Table: `gold.fact_sales`
 
 ### Description
 
-Stores transactional sales data and links to dimension tables.
+The `fact_sales` table is a fact table that captures transactional sales data. It records measurable business events and links to dimension tables to provide context for analysis.
 
 ### Columns
 
-| Column Name   | Data Type    | Description                  |
-| ------------- | ------------ | ---------------------------- |
-| order_number  | nvarchar(50) | Order identifier             |
-| product_key   | bigint       | Foreign key to dim_products  |
-| customer_key  | bigint       | Foreign key to dim_customers |
-| order_date    | date         | Date of order                |
-| shipping_date | date         | Date of shipment             |
-| due_date      | date         | Due date for delivery        |
-| sales_amount  | int          | Total sales amount           |
-| quantity      | int          | Quantity sold                |
-| price         | int          | Price per unit               |
+| Column Name   | Data Type    | Description                                         |
+| ------------- | ------------ | --------------------------------------------------- |
+| order_number  | nvarchar(50) | Unique identifier for each sales order transaction. |
+| product_key   | bigint       | Foreign key referencing the `dim_products` table.   |
+| customer_key  | bigint       | Foreign key referencing the `dim_customers` table.  |
+| order_date    | date         | Date when the order was placed.                     |
+| shipping_date | date         | Date when the order was shipped to the customer.    |
+| due_date      | date         | Expected delivery or due date for the order.        |
+| sales_amount  | int          | Total revenue generated from the transaction.       |
+| quantity      | int          | Number of units sold in the transaction.            |
+| price         | int          | Unit price of the product at the time of sale.      |
 
 ---
 
-## 🔗 Relationships
+## Relationships
 
-- `fact_sales.customer_key` → `dim_customers.customer_key`
-- `fact_sales.product_key` → `dim_products.product_key`
+* `fact_sales.customer_key` references `dim_customers.customer_key`
+* `fact_sales.product_key` references `dim_products.product_key`
 
----
-
-## 📌 Notes
-
-- All dimension tables use **surrogate keys** for better performance and flexibility.
-- Fact table stores measurable metrics (sales, quantity, price).
-- Designed using a **star schema** for analytical queries.
+These relationships form a star schema, enabling efficient joins between fact and dimension tables for analytical queries.
 
 ---
 
-## ✅ Usage Examples
+## Notes
+
+* Surrogate keys are used in dimension tables to ensure consistency and improve join performance.
+* The fact table stores quantitative measures, while dimension tables provide descriptive context.
+* Data in the Gold Layer is fully transformed, validated, and optimized for reporting and business intelligence tools.
+
+---
+
+## Usage Examples
 
 ### Total Sales by Country
 
@@ -111,4 +115,4 @@ ORDER BY revenue DESC;
 
 ---
 
-🚀 This catalog helps analysts and engineers understand and use the Gold Layer efficiently.
+This document serves as a formal data dictionary for the Gold Layer, providing clear definitions and context for all tables and columns used in analytical workloads.
