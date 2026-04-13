@@ -77,8 +77,8 @@ The `fact_sales` table is a fact table that captures transactional sales data. I
 
 ## Relationships
 
-* `fact_sales.customer_key` references `dim_customers.customer_key`
-* `fact_sales.product_key` references `dim_products.product_key`
+- `fact_sales.customer_key` references `dim_customers.customer_key`
+- `fact_sales.product_key` references `dim_products.product_key`
 
 These relationships form a star schema, enabling efficient joins between fact and dimension tables for analytical queries.
 
@@ -86,9 +86,9 @@ These relationships form a star schema, enabling efficient joins between fact an
 
 ## Notes
 
-* Surrogate keys are used in dimension tables to ensure consistency and improve join performance.
-* The fact table stores quantitative measures, while dimension tables provide descriptive context.
-* Data in the Gold Layer is fully transformed, validated, and optimized for reporting and business intelligence tools.
+- Surrogate keys are used in dimension tables to ensure consistency and improve join performance.
+- The fact table stores quantitative measures, while dimension tables provide descriptive context.
+- Data in the Gold Layer is fully transformed, validated, and optimized for reporting and business intelligence tools.
 
 ---
 
