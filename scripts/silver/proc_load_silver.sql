@@ -139,10 +139,33 @@ BEGIN
             sls_ord_num,
             sls_prd_key,
             sls_cust_id,
-            TRY_CONVERT(date, NULLIF(CAST(sls_order_dt AS VARCHAR(8)), '0')) AS sls_order_dt,
-            TRY_CONVERT(date, NULLIF(CAST(sls_ship_dt AS VARCHAR(8)), '0')) AS sls_ship_dt,
-            TRY_CONVERT(date, NULLIF(CAST(sls_due_dt AS VARCHAR(8)), '0')) AS sls_due_dt,
-            CASE
+            -- ✅ Order Date (validated)
+             TRY_CONVERT(date,
+                 CASE 
+                     WHEN sls_order_dt BETWEEN 20000101 AND YEAR(GETDATE()) * 10000 + 1231
+                     THEN CAST(sls_order_dt AS VARCHAR(8))
+                     ELSE NULL
+                 END,
+             112) AS sls_order_dt,
+         
+             -- ✅ Ship Date (validated)
+             TRY_CONVERT(date,
+                 CASE 
+                     WHEN sls_ship_dt BETWEEN 20000101 AND YEAR(GETDATE()) * 10000 + 1231
+                     THEN CAST(sls_ship_dt AS VARCHAR(8))
+                     ELSE NULL
+                 END,
+             112) AS sls_ship_dt,
+         
+             -- ✅ Due Date (validated)
+             TRY_CONVERT(date,
+                 CASE 
+                     WHEN sls_due_dt BETWEEN 20000101 AND YEAR(GETDATE()) * 10000 + 1231
+                     THEN CAST(sls_due_dt AS VARCHAR(8))
+                     ELSE NULL
+                 END,
+             112) AS sls_due_dt,
+                     CASE
                 WHEN sls_sales IS NULL 
                      OR sls_sales <= 0 
                      OR sls_sales != sls_quantity * ABS(sls_price)
